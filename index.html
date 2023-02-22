@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Guess your number</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!-- ============  ETAPE 6 : RANGE ================ -->
+       <!-- Si le nombre proposé par l’utilisateur est plus petit
+         que le nombre à deviner, alors vous changerez le range minimal. 
+         Ce ne sera plus 10 mais le dernier nombre proposé.
+          Attention si le nombre proposé est en dessous du range minimal, 
+          cela ne sert à rien de le changer.
+         --> <!-- ====================================== -->
+
+         <h1>Devinez un nombre entre 0 et 50 :</h1>
+         <p id="range"> 0   &lt; ? &lt; 50</p>
+         <p>Tentatives : <span id="attempts">0</span></p>
+         <input type="text" id="guess" >
+         <button onclick="gamePlay()">Devinez Le chiffre</button>
+         <p id="result"></p>
+
+        <script>  
+            let numberToGuess;   
+            let minRange = 0; // on définit le minimum par défaut qui sera affiché au début
+            let maxRange = 50;// on définit le maximum par défaut qui sera affiché au début
+
+            function askNumber() {
+                numberToGuess = parseInt(prompt("Entrez un nombre à faire deviner entre 0 et 50"));
+                while (numberToGuess < 0 || numberToGuess > 50) {
+                    numberToGuess = parseInt(prompt("Le nombre doit être compris entre 0 et 50. Entrez un nombre à deviner."));
+                }
+            }     
+
+            function didIWin(givenNumber, numberToGuess) {
+                let isWon = false; 
+                if (givenNumber < numberToGuess) {
+                    if (givenNumber >= minRange) { // On vérifie si le nombre proposé est supérieur ou égale à la valeur actuelle de rangeMin
+                        minRange = givenNumber; // on réassigne donc on met à jour  rangeMin avec le nombre proposé du joueur 2
+                        document.getElementById("range").textContent = minRange + " < ? < " + maxRange; //  On le met à jour dans le HTML pour afficher le nouveau range minimal
+                    } else {
+                        alert("Le nombre proposé n'est pas dans le range.");// On affiche une alerte si le nombre proposé du joueur 2 est en dehors du range minimal
+                    }
+                    alert("Plus grand");
+                } else if (givenNumber > numberToGuess) {
+                    if (givenNumber <= maxRange) {
+                        maxRange = givenNumber;
+                        document.getElementById("range").textContent = minRange + " < ? < " + maxRange;
+                    } else {
+                        alert("Le nombre proposé n'est pas dans le range.");
+                    }
+                    alert("Plus petit");
+                } else {
+                    alert("Bravo ! Vous avez deviné le nombre.");
+                    isWon = true;
+                }
+                document.getElementById("guess").value = "";
+                document.getElementById("guess").placeholder = "Veuillez saisir un nombre";
+                return isWon;
+            }
+
+            function gamePlay() {
+                let givenNumber = parseInt(document.getElementById("guess").value);
+                let isWon = didIWin(givenNumber, numberToGuess);
+                let tentatives = parseInt(document.getElementById("attempts").textContent) + 1; // tentatives++ 
+                document.getElementById("attempts").textContent = tentatives;
+                document.getElementById("result").textContent = isWon ? `Partie terminée en ${tentatives} essais.` : "";
+            }
+
+            askNumber();
+
+        </script>
+    </body>
+</html>
